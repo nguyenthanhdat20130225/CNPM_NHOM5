@@ -1,6 +1,5 @@
 package db;
 
-import Product.Account;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;

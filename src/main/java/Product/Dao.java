@@ -19,7 +19,7 @@ public class Dao {
      * @return Danh sách các đối tượng Product
      */
     public  List<Product> getAll(){
-       return  JDBiConnector.get().withHandle( handle -> {
+        return  JDBiConnector.get().withHandle( handle -> {
             return handle.createQuery("select * from product" ).mapToBean(Product.class).list();
         } );
     }
@@ -35,7 +35,7 @@ public class Dao {
 
         return  JDBiConnector.get().withHandle( handle -> {
             Object o= handle.createUpdate(q).executeAndReturnGeneratedKeys("id").mapToMap().findOnly().get("generated_key");
-       return( (BigInteger)o).intValue();
+            return( (BigInteger)o).intValue();
         } );
     }
 
@@ -88,6 +88,32 @@ public class Dao {
         });
     }
 
+    /// kiểm tra account có tồn tại không
+    public Account getAccountByUsername(String username) {
+        String q = "SELECT * FROM accounts WHERE username = :username";
+        return JDBiConnector.get().withHandle(handle -> {
+            return handle.createQuery(q)
+                    .bind("username", username)
+                    .mapToBean(Account.class)
+                    .findFirst()
+                    .orElse(null);
 
+        });
+    }
+    //    lưu Account
+    public int saveAccount(Account a) {
+        String q = "INSERT INTO accounts (`username`, `password`, `fullname`, `email`, `isAdmin`, `isSell`) VALUES ('" + a.getUsername() + "', '" + a.getPassword() + "', '" + a.getFullname() + "', '" + a.getEmail() + "', " + a.getIsAdmin() + ", " + a.getIsSell() + ")";
+
+        return JDBiConnector.get().withHandle(handle -> {
+            Object o = handle.createUpdate(q).executeAndReturnGeneratedKeys("id").mapToMap().findOnly().get("generated_key");
+            return ((BigInteger) o).intValue();
+        });
+    }
+    //    hàm lấy tất cả danh sách Account
+    public List<Account> getAllOfAccount(){
+        return  JDBiConnector.get().withHandle( handle -> {
+            return handle.createQuery("select * from accounts" ).mapToBean(Account.class).list();
+        } );
+    }
 
 }
